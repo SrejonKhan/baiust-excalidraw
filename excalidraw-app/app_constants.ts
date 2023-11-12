@@ -37,6 +37,7 @@ export const STORAGE_KEYS = {
   LOCAL_STORAGE_THEME: "excalidraw-theme",
   VERSION_DATA_STATE: "version-dataState",
   VERSION_FILES: "version-files",
+  PREDEFINED_LIB_LOAD_STATE: "predefined-lib-state",
 } as const;
 
 export const COOKIES = {

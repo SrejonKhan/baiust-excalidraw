@@ -7,6 +7,7 @@ import {
 import { clearElementsForLocalStorage } from "../../src/element";
 import { STORAGE_KEYS } from "../app_constants";
 import { ImportedDataState } from "../../src/data/types";
+import { predefinedLibrary } from "./predefinedLibrary";
 
 export const saveUsernameToLocalStorage = (username: string) => {
   try {
@@ -103,11 +104,24 @@ export const getTotalStorageSize = () => {
 
 export const getLibraryItemsFromStorage = () => {
   try {
-    const libraryItems: ImportedDataState["libraryItems"] = JSON.parse(
-      localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_LIBRARY) as string,
+    const predefinedLibLoadState = Boolean(
+      localStorage.getItem(STORAGE_KEYS.PREDEFINED_LIB_LOAD_STATE) as string,
     );
 
-    return libraryItems || [];
+    let userLibraryItems =
+      JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_LIBRARY) as string,
+      ) ?? [];
+
+    // even if user already added other libraries from excalidraw, we would merge the
+    // predefined library (DSA and Digital Logic).
+    if (!predefinedLibLoadState) {
+      const predefinedLibraryItems = JSON.parse(predefinedLibrary as string);
+      userLibraryItems = [...userLibraryItems, ...predefinedLibraryItems];
+      localStorage.setItem(STORAGE_KEYS.PREDEFINED_LIB_LOAD_STATE, "true");
+    }
+
+    return userLibraryItems || [];
   } catch (error) {
     console.error(error);
     return [];
